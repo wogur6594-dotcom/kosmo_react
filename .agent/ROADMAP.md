@@ -26,9 +26,9 @@
 ## [Milestone 2] JWT 기반 회원 관리 및 보안 인프라
 *플랫폼 전체에 걸쳐 안전하게 사용자 식별을 할 수 있는 JWT 인증 체계를 백엔드와 프론트엔드 양측에 구현합니다.*
 
-- [ ] **2.1. JWT 토큰 발급 & 파싱 모듈 구현**
-  - [ ] JJWT 라이브러리를 사용해 `JwtTokenProvider` 개발 (보안 대칭키 기반 암호화)
-  - [ ] JWT 생성 시간, 만료 시간(24시간) 설정 로직 구성
+- [x] **2.1. JWT 토큰 발급 & 파싱 모듈 구현**
+  - [x] JJWT 라이브러리를 사용해 `JwtTokenProvider` 개발 (보안 대칭키 기반 암호화)
+  - [x] JWT 생성 시간, 만료 시간(24시간) 설정 로직 구성
 - [ ] **2.2. Spring Security 필터 체인 체계 확립**
   - [ ] Stateless(무상태) 세션 정책 구성 및 CSRF 방지 비활성화
   - [ ] `JwtAuthenticationFilter`를 만들어 `UsernamePasswordAuthenticationFilter` 전단에 삽입
