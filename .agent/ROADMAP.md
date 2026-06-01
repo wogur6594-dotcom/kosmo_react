@@ -29,10 +29,10 @@
 - [x] **2.1. JWT 토큰 발급 & 파싱 모듈 구현**
   - [x] JJWT 라이브러리를 사용해 `JwtTokenProvider` 개발 (보안 대칭키 기반 암호화)
   - [x] JWT 생성 시간, 만료 시간(24시간) 설정 로직 구성
-- [ ] **2.2. Spring Security 필터 체인 체계 확립**
-  - [ ] Stateless(무상태) 세션 정책 구성 및 CSRF 방지 비활성화
-  - [ ] `JwtAuthenticationFilter`를 만들어 `UsernamePasswordAuthenticationFilter` 전단에 삽입
-  - [ ] 회원가입/로그인/주식조회 등 비인증 접근 허용 목록(`requestMatchers`) 명시
+- [x] **2.2. Spring Security 필터 체인 체계 확립**
+  - [x] Stateless(무상태) 세션 정책 구성 및 CSRF 방지 비활성화
+  - [x] `JwtAuthenticationFilter`를 만들어 `UsernamePasswordAuthenticationFilter` 전단에 삽입
+  - [x] 회원가입/로그인/주식조회 등 비인증 접근 허용 목록(`requestMatchers`) 명시
 - [ ] **2.3. 회원 인증 API 및 로직 개발**
   - [ ] `tb_users` 테이블에 연동되는 `MemberDTO` (Entity) 및 Repository 구현
   - [ ] BCrypt 해시 인코더를 활용한 패스워드 단방향 암호화 가입 기능 (`/api/member/join`)
