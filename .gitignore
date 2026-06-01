@@ -1,0 +1,34 @@
+# Sensitive Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Gradle and Build directories
+.gradle/
+build/
+out/
+bin/
+
+# Java class files
+*.class
+*.log
+
+# IDE files
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# Node modules and Frontend build outputs
+node_modules/
+front/vite-project/node_modules/
+front/vite-project/dist/
+dist/
+
+# OS specific files
+Thumbs.db
+.DS_Store

@@ -1,0 +1,13 @@
+function NoticeDetail(){
+
+
+    return(
+        <>
+
+        </>
+
+    )
+
+}
+
+NoticeDetail;
