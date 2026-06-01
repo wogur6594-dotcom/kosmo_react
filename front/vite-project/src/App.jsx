@@ -2,53 +2,61 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './components/pages/Home';
-import ProductIntro from './components/pages/ProductIntro';
-import ProductList from './components/pages/ProductList';
+import StockDetail from './components/pages/StockDetail';
+import Board from './components/pages/Board';
+import BoardWrite from './components/pages/BoardWrite';
+import BoardDetail from './components/pages/BoardDetail';
 import Notice from './components/pages/Notice';
-import NoticeWrite from './components/pages/NoticeWrite';
-import Qna from './components/pages/Qna';
+import NoticeDetail from './components/pages/NoticeDetail';
 import Auth from './components/pages/Auth';
+import Profile from './components/pages/Profile';
 
-// Create a modern route object mapping for react-router-dom v6
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />, // Root layout wrap with <Outlet />
+    element: <Layout />, // Shared root layout with header, footer, outlet
     children: [
       {
         path: '',
         element: <Home />
       },
       {
-        path: 'intro',
-        element: <ProductIntro />
+        path: 'stock/:symbol',
+        element: <StockDetail />
       },
       {
-        path: 'products',
-        element: <ProductList />
+        path: 'board',
+        element: <Board />
+      },
+      {
+        path: 'board/write',
+        element: <BoardWrite />
+      },
+      {
+        path: 'board/:id',
+        element: <BoardDetail />
       },
       {
         path: 'notice',
         element: <Notice />
       },
       {
-        path: 'notice/write',
-        element: <NoticeWrite />
-      },
-      {
-        path: 'qna',
-        element: <Qna />
+        path: 'notice/:id',
+        element: <NoticeDetail />
       },
       {
         path: 'auth',
         element: <Auth />
+      },
+      {
+        path: 'profile',
+        element: <Profile />
       }
     ]
   }
 ]);
 
 function App() {
-  // Render routing using the modern RouterProvider
   return <RouterProvider router={router} />;
 }
 

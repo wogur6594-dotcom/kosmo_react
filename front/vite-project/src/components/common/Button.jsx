@@ -76,28 +76,28 @@ function Button({
           border-radius: 12px;
         }
 
-        /* Variants (Forced High-Contrast Hex Codes to prevent variable dropping) */
+        /* Variants (Forced High-Contrast Hex Codes or Variables to prevent variable dropping) */
         .btn-primary {
-          background-color: #783F04 !important; /* 초코 식빵 브라운 */
+          background-color: var(--toss-blue) !important; /* 토스 블루 */
           color: #ffffff !important;
         }
         .btn-primary:not(:disabled):hover {
-          background-color: #542B01 !important;
+          background-color: var(--toss-blue-hover) !important;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(120, 63, 4, 0.25);
+          box-shadow: 0 4px 12px rgba(49, 130, 246, 0.25);
         }
         .btn-primary:not(:disabled):active {
           transform: translateY(0);
         }
 
         .btn-secondary {
-          background-color: #D97706 !important; /* 골든 허니 오렌지 */
-          color: #ffffff !important;
+          background-color: var(--toss-blue-light) !important; /* 토스 연블루 */
+          color: var(--toss-blue) !important;
         }
         .btn-secondary:not(:disabled):hover {
-          background-color: #B45309 !important;
+          background-color: #D2E3FC !important;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+          box-shadow: 0 4px 12px rgba(49, 130, 246, 0.15);
         }
         .btn-secondary:not(:disabled):active {
           transform: translateY(0);
@@ -105,11 +105,11 @@ function Button({
 
         .btn-outline {
           background-color: transparent !important;
-          border: 2px solid #783F04 !important; /* 굵고 선명한 테두리 */
-          color: #783F04 !important;
+          border: 2px solid var(--toss-blue) !important; /* 굵고 선명한 테두리 */
+          color: var(--toss-blue) !important;
         }
         .btn-outline:not(:disabled):hover {
-          background-color: #F7EFE5 !important;
+          background-color: var(--toss-blue-light) !important;
           transform: translateY(-2px);
         }
         .btn-outline:not(:disabled):active {
@@ -118,14 +118,14 @@ function Button({
 
         .btn-text {
           background-color: transparent !important;
-          color: #2D221A !important;
+          color: var(--text-primary) !important;
           padding-left: 8px !important;
           padding-right: 8px !important;
           font-weight: 700;
         }
         .btn-text:not(:disabled):hover {
-          color: #783F04 !important;
-          background-color: #FAF4EB !important;
+          color: var(--toss-blue) !important;
+          background-color: var(--toss-blue-light) !important;
         }
       `}</style>
       <button

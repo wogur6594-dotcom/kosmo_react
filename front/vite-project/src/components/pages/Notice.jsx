@@ -12,20 +12,19 @@ const MOCK_NOTICES = [
     type: 'notice',
     typeStr: '공지',
     badgeClass: 'badge-danger',
-    title: 'Bready & Co. 오가닉 식빵 가격 조정 안내',
-    content: `안녕하세요, Bready & Co.를 사랑해 주시는 고객 여러분.
-우리는 최고의 식빵을 만들기 위해 100% 유기농 밀가루와 프랑스산 고메 버터, 국내산 천일염 등 최상급 원재료만을 엄선하여 사용하고 있습니다.
+    title: '[점검] 해외주식 소수점 실시간 주문 서비스 시스템 점검 안내',
+    content: `안녕하세요, 토스증권을 이용해 주시는 투자자 여러분.
+보다 안정적이고 원활한 해외주식 소수점 실시간 주문 서비스를 제공하기 위해 대외 시스템 정기 연계 점검을 진행할 예정입니다.
 
-최근 지속적인 세계 밀 가격 및 유제품 원자재 수입 물류비 상승으로 인하여 부득이하게 일부 품목의 가격을 아래와 같이 소폭 조정하게 되었습니다.
+점검 시간에는 해외주식 소수점 주문 및 원화 환산 가격 조회가 일시적으로 제한되오니, 투자 업무에 참고하시기 바랍니다.
 
-• 조정 일시: 2026년 6월 1일부터
-• 대상 품목:
-  - 시그니처 탕종 우유 식빵: 5,200원 -> 5,500원
-  - 달콤 가득 밤 식빵: 6,500원 -> 6,800원
-  - 롤치즈 블랙올리브 식빵: 5,900원 -> 6,200원
+• 점검 일시: 2026년 6월 7일 (일) 오전 02:00 ~ 오전 06:00 (약 4시간)
+• 영향 범위: 
+  - 미국 주식 소수점 실시간 매수/매도 주문 접수 중단
+  - 실시간 환전 및 자산 잔고 반영 일시 지연
 
-앞으로도 더 훌륭한 품질과 속이 편안한 건강한 빵으로 보답하는 Bready & Co.가 되겠습니다. 고객 여러분의 깊은 양해 부탁드립니다. 감사합니다.`,
-    author: '본사 운영팀',
+항상 신뢰할 수 있고 더욱 견고한 금융 서비스를 제공하기 위해 최선을 다하는 토스증권이 되겠습니다. 고객 여러분의 깊은 양해 부탁드립니다. 감사합니다.`,
+    author: '토스증권 운영팀',
     date: '2026-05-28',
     views: 120
   },
@@ -34,16 +33,16 @@ const MOCK_NOTICES = [
     type: 'event',
     typeStr: '이벤트',
     badgeClass: 'badge-accent',
-    title: '6월 신제품 출시 기념 구매 시 모닝빵 증정 이벤트',
-    content: `신선한 아침을 여는 Bready & Co.에서 다가오는 6월을 맞이하여 달콤한 허니 시나몬 페이스트리 식빵 신제품을 출시합니다!
+    title: '[이벤트] 해외 소수점 주식 무료 증정 및 거래 수수료 평생 혜택',
+    content: `금융의 새로운 바람을 만드는 토스증권에서 다가오는 6월을 맞이하여 신규 투자자분들을 위한 미국 대표 우량 소수점 주식 100% 랜덤 증정 이벤트를 시작합니다!
 
-출시를 기념하여 아래 기간 동안 시그니처 베스트 식빵 제품을 구매하시는 모든 고객분들께 100% 유기농 밀 모닝빵 2구를 선물로 증정해 드립니다.
+가입 즉시 행운의 룰렛을 돌려 미국 상위 10대 기업(Apple, Microsoft, Tesla 등) 소수점 주식을 무상 지급받으세요.
 
-• 이벤트 기간: 2026년 6월 1일 ~ 6월 7일 (7일간)
-• 대상 매장: 본점 및 전 매장
-• 혜택 내용: 밤 식빵 또는 시그니처 탕종 식빵 구매 시 매일 당일 구워낸 쫄깃 모닝빵 2구 즉시 증정!
+• 이벤트 기간: 2026년 6월 1일 ~ 6월 30일 (한 달간)
+• 참여 대상: 토스증권 생애 첫 주식 계좌 개설 고객
+• 혜택 내용: 100% 당첨 미국 우량주 소수점 주식 최소 1,000원 ~ 최대 10만 원 상당 즉시 입금!
 
-갓 구운 빵 냄새 가득한 매장으로 향긋한 신제품 시식하러 오세요!`,
+소중한 첫 시드머니, 토스증권이 제공하는 풍성한 소수점 주식 혜택과 함께 기분 좋게 시작해 보세요!`,
     author: '마케팅팀',
     date: '2026-05-25',
     views: 245
@@ -53,19 +52,18 @@ const MOCK_NOTICES = [
     type: 'info',
     typeStr: '안내',
     badgeClass: 'badge-primary',
-    title: '매주 월요일 정기 휴무 및 갓 구운 빵 나오는 시간표 안내',
-    content: `Bready & Co. 본점 매장 정기 휴무 및 갓 구운 식빵 나오는 시간표를 안내해 드립니다.
+    title: '[안내] 미국 서머타임 적용에 따른 해외주식 거래 시간 변동 안내',
+    content: `토스증권 해외주식 서비스를 이용해 주시는 고객 여러분께 안내해 드립니다.
 
-효모의 활발한 대사 관리 및 쾌적한 매장 위생 정비를 위해 매주 월요일은 정기 휴무로 지정되어 운영됩니다. 이용에 불편 없으시길 바랍니다.
+미국 현지 서머타임(Daylight Saving Time) 적용 기간에 따라 미국 주식 시장의 정규 거래 및 프리마켓/애프터마켓 운영 시간이 아래와 같이 1시간 앞당겨집니다. 투자 시 착오 없으시길 바랍니다.
 
-[ 갓 구운 식빵 시간표 (화~일) ]
-• 오전 08:30 - 시그니처 탕종 우유 식빵
-• 오전 10:00 - 달콤 가득 밤 식빵 & 롤치즈 블랙올리브 식빵
-• 오전 11:30 - 담백 오가닉 통밀 식빵
-• 오후 01:30 - 프리미엄 초코 마블 식빵, 허니 시나몬 식빵
+[ 미국 주식 거래 시간표 (서머타임 적용 기준) ]
+• 프리마켓 (장전 거래): 오후 05:00 ~ 오후 10:30
+• 정규 시장 거래: 오후 10:30 ~ 익일 오전 05:00
+• 애프터마켓 (장후 거래): 익일 오전 05:00 ~ 오전 09:00
 
-시간 맞춰 오시면 결결이 찢어지는 따끈하고 부드러운 최상의 식빵 맛을 즐기실 수 있습니다. 감사합니다.`,
-    author: '본점 점장',
+서머타임 해제 시에는 모든 거래 시간이 1시간씩 뒤로 이동하게 되며, 변동 시 공지사항을 통해 다시 안내해 드리겠습니다. 오늘도 성공적인 투자를 기원합니다. 감사합니다.`,
+    author: '해외주식지원팀',
     date: '2026-05-20',
     views: 184
   }
@@ -122,8 +120,8 @@ function Notice() {
 
         /* Simulator Console Card (Much More Elevated) */
         .simulator-bar {
-          background-color: #FAF4EB;
-          border: 2px dashed var(--secondary);
+          background-color: var(--toss-blue-light);
+          border: 2px dashed var(--toss-blue);
           border-radius: var(--border-radius);
           padding: 24px;
           margin-bottom: 40px;
@@ -133,7 +131,7 @@ function Notice() {
           gap: 24px;
           flex-wrap: wrap;
           text-align: left;
-          box-shadow: 0 4px 12px rgba(111, 59, 19, 0.04);
+          box-shadow: 0 4px 12px rgba(49, 130, 246, 0.04);
         }
 
         .simulator-info {
@@ -209,16 +207,16 @@ function Notice() {
         }
 
         .filter-btn:hover {
-          color: #783F04 !important;
-          border-color: #783F04 !important;
-          background-color: #F7EFE5 !important;
+          color: var(--toss-blue) !important;
+          border-color: var(--toss-blue) !important;
+          background-color: var(--toss-blue-light) !important;
         }
 
         .filter-btn-active {
-          background-color: #783F04 !important; /* 100% 딥 브라운 배경 고정 */
+          background-color: var(--toss-blue) !important; /* 100% 딥 블루 배경 고정 */
           color: #ffffff !important;           /* 100% 화이트 텍스트 고정 */
-          border-color: #783F04 !important;
-          box-shadow: 0 4px 12px rgba(120, 63, 4, 0.25);
+          border-color: var(--toss-blue) !important;
+          box-shadow: 0 4px 12px rgba(49, 130, 246, 0.25);
         }
 
         .search-box-wrapper {
@@ -393,7 +391,7 @@ function Notice() {
             <span className="section-subtitle">news & event</span>
             <h2 className="section-title" style={{ fontSize: '2.5rem', marginBottom: '8px' }}>소식 & 이벤트</h2>
             <p className="section-desc" style={{ color: 'var(--text-light)', fontSize: '1.05rem' }}>
-              Bready & Co.의 다채로운 이벤트 정보와 정직한 공지사항을 알려드립니다.
+              토스증권의 중요한 공지사항 및 다양한 투자 혜택 이벤트를 알려드립니다.
             </p>
           </div>
         </div>
@@ -409,14 +407,14 @@ function Notice() {
               <div>
                 <strong style={{ fontSize: '1rem', display: 'block', marginBottom: '4px' }}>[가이드 & 시뮬레이터 안내]</strong>
                 공지사항 등록 권한을 즉시 획득하시려면 우측 스위치를 켜시거나, 회원관리에서 최고 관리자 
-                계정(계정: <span style={{ textDecoration: 'underline', color: 'var(--primary)' }}>admin@bready.com</span> / 비밀번호: <span style={{ textDecoration: 'underline', color: 'var(--primary)' }}>admin1234</span>)으로 로그인해 주십시오.
+                계정(계정: <span style={{ textDecoration: 'underline', color: 'var(--primary)' }}>admin</span> / 비밀번호: <span style={{ textDecoration: 'underline', color: 'var(--primary)' }}>admin1234</span>)으로 로그인해 주십시오.
               </div>
             </div>
             <button 
               className="simulator-toggle-btn" 
               onClick={handleToggleAdminMode} 
               type="button"
-              style={{ backgroundColor: isAdminMode ? '#783F04' : '#8E7D72' }}
+              style={{ backgroundColor: isAdminMode ? 'var(--toss-blue)' : 'var(--text-tertiary)' }}
             >
               {isAdminMode ? <CheckCircle2 size={18} /> : null}
               관리자 모드: {isAdminMode ? '활성화 (ON)' : '비활성 (OFF)'}

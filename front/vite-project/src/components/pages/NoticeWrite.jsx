@@ -8,7 +8,7 @@ function NoticeWrite() {
   const navigate = useNavigate();
   const [type, setType] = useState('notice');
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('본사 운영팀');
+  const [author, setAuthor] = useState('토스증권 운영팀');
   const [content, setContent] = useState('');
 
   const handleSubmit = (e) => {
@@ -59,8 +59,8 @@ function NoticeWrite() {
         }
 
         .guide-card-box {
-          background-color: #FAF4EB;
-          border: 2px dashed var(--secondary);
+          background-color: var(--toss-blue-light);
+          border: 2px dashed var(--toss-blue);
           border-radius: var(--border-radius);
           padding: 32px;
           display: flex;
@@ -127,7 +127,7 @@ function NoticeWrite() {
           font-size: 0.98rem !important;
           font-weight: 700 !important;
           color: var(--text-heading) !important;
-          background-color: #FCFAF8 !important;
+          background-color: var(--bg) !important;
           border: 2px solid var(--border) !important;
           border-radius: var(--border-radius-sm) !important;
           outline: none !important;
@@ -137,8 +137,8 @@ function NoticeWrite() {
 
         .form-block-input-field:focus {
           border-color: var(--primary) !important;
-          background-color: #ffffff !important;
-          box-shadow: 0 0 0 5px rgba(226, 135, 35, 0.18), 0 2px 8px rgba(111, 59, 19, 0.08) !important;
+          background-color: var(--card-bg) !important;
+          box-shadow: 0 0 0 5px rgba(49, 130, 246, 0.18), 0 2px 8px rgba(0, 80, 255, 0.08) !important;
         }
 
         .form-block-input-field::placeholder {
@@ -171,7 +171,7 @@ function NoticeWrite() {
           font-size: 0.98rem !important;
           font-weight: 700 !important;
           color: var(--text-heading) !important;
-          background-color: #FCFAF8 !important;
+          background-color: var(--bg) !important;
           border: 2px solid var(--border) !important;
           border-radius: var(--border-radius-sm) !important;
           outline: none !important;
@@ -182,8 +182,8 @@ function NoticeWrite() {
 
         .form-block-select-field:focus {
           border-color: var(--primary) !important;
-          background-color: #ffffff !important;
-          box-shadow: 0 0 0 5px rgba(226, 135, 35, 0.18), 0 2px 8px rgba(111, 59, 19, 0.08) !important;
+          background-color: var(--card-bg) !important;
+          box-shadow: 0 0 0 5px rgba(49, 130, 246, 0.18), 0 2px 8px rgba(0, 80, 255, 0.08) !important;
         }
 
       `}</style>
@@ -201,7 +201,7 @@ function NoticeWrite() {
               padding: '0',
               fontWeight: 800,
               fontSize: '0.98rem',
-              color: 'var(--primary)'
+              color: 'var(--toss-blue)'
             }}
           >
             <ArrowLeft size={18} strokeWidth={2.5} /> 소식 목록으로 돌아가기
@@ -216,11 +216,11 @@ function NoticeWrite() {
           <div className="write-guide-left">
             <span className="section-subtitle" style={{ fontSize: '0.95rem' }}>administrator only</span>
             <h1 style={{ fontSize: '2.4rem', color: 'var(--text-heading)', lineHeight: 1.35, fontWeight: 800 }}>
-              Bready & Co.<br />
+              토스증권<br />
               공지사항 작성 수칙
             </h1>
             <p style={{ color: 'var(--text-light)', fontSize: '0.98rem', lineHeight: 1.7, fontWeight: 600 }}>
-              새 소식과 공지글은 매장을 방문해 주시는 든든한 고객분들께 우리 브랜드의 건강한 온기를 건네는 중요한 통로입니다.
+              새 소식과 공지글은 토스증권을 이용하는 소중한 투자자분들께 금융 정보와 혜택을 안전하게 전달하는 소통의 창구입니다.
             </p>
 
             <div className="guide-card-box">
@@ -228,15 +228,15 @@ function NoticeWrite() {
                 <ShieldAlert className="guide-icon-wrapper" size={22} strokeWidth={2.5} />
                 <div>
                   <strong>정확한 사실 기반 작성</strong>
-                  <span>식빵 라인업 가격 변동, 6월 깜짝 모닝빵 사은품 증정 등 핵심 일정 및 변동 가격표는 오타 없이 이중 확인 후 릴리즈해 주십시오.</span>
+                  <span>서비스 점검 시간, 소수점 주식 혜택 등 핵심 일정 및 금융 관련 데이터는 오타 없이 이중 확인 후 릴리즈해 주십시오.</span>
                 </div>
               </div>
 
               <div className="guide-item">
                 <CheckCircle2 className="guide-icon-wrapper" size={22} strokeWidth={2.5} />
                 <div>
-                  <strong>부드럽고 고소한 문체</strong>
-                  <span>매장에서 매일 아침 구워내는 따뜻한 우유 식빵처럼, 고객을 존중하며 아늑함이 묻어나는 존칭 문법을 온전히 고수해 주십시오.</span>
+                  <strong>쉽고 친절한 문체 고수</strong>
+                  <span>어렵고 낯선 금융 용어를 지양하고, 사용자의 관점에서 이해하기 쉽고 명확하며 따뜻한 존칭 문법을 고수해 주십시오.</span>
                 </div>
               </div>
             </div>
@@ -277,7 +277,7 @@ function NoticeWrite() {
                     id="noticeAuthorInput"
                     type="text" 
                     className="form-block-input-field" 
-                    placeholder="예: 본사 운영팀" 
+                    placeholder="예: 토스증권 운영팀" 
                     required 
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}

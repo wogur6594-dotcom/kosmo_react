@@ -6,16 +6,29 @@
 
 :root {
   /* Toss Premium Color Palette - Light Mode */
-  --toss-blue: #0050FF;
-  --toss-blue-hover: #0040D0;
+  --toss-blue: #3182F6;
+  --toss-blue-hover: #1B64DA;
   --toss-blue-light: #E8F0FE;
+  
+  /* Map standard theme tokens to Toss style */
+  --primary: #3182F6;
+  --primary-hover: #1B64DA;
+  --secondary: #3182F6;
+  --secondary-light: #F9FAFB;
+  --accent: #F04452;      /* Beautiful Korean Stock Rise Red */
+  --accent-light: #FEECEF;
   
   --bg: #F2F4F6;            /* Toss light gray page background */
   --card-bg: #FFFFFF;
   --text-primary: #191F28;  /* Toss deep slate black */
   --text-secondary: #4E5968;/* Toss medium gray */
   --text-tertiary: #8B95A1; /* Toss light gray */
+  --text-heading: #191F28;  /* Toss deep slate black */
+  --text-light: #8B95A1;    /* Toss light gray */
   --border: #E5E8EB;        /* Thin elegant border */
+  
+  --border-radius: 16px;
+  --border-radius-sm: 8px;
   
   --stock-up: #F04452;      /* Beautiful Korean Stock Rise Red */
   --stock-down: #3182F6;    /* Beautiful Korean Stock Fall Blue */
@@ -29,11 +42,19 @@
 
 /* Toss Dark Mode - Activated via .dark class */
 .dark {
+  --primary: #3182F6;
+  --primary-hover: #1B64DA;
+  --secondary: #3182F6;
+  --secondary-light: #182030;
+  --accent: #F04452;
+  
   --bg: #101622;            /* Toss Deep Blue-Black */
   --card-bg: #1B2232;       /* Toss Card Slate Blue */
   --text-primary: #F9FAFB;
   --text-secondary: #D1D5DB;
   --text-tertiary: #9CA3AF;
+  --text-heading: #F9FAFB;
+  --text-light: #9CA3AF;
   --border: #2C354D;
   
   --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);

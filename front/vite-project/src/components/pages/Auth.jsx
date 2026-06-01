@@ -35,7 +35,7 @@ function Auth() {
       localStorage.setItem('isAdmin', 'false');
       localStorage.setItem('username', loginUsername);
       localStorage.setItem('isLoggedIn', 'true');
-      alert(`반갑습니다! ${loginUsername} 고객님, 로그인에 성공하셨습니다. 당일 구워진 식빵을 둘러보세요!`);
+      alert(`반갑습니다! ${loginUsername}님, 로그인에 성공하셨습니다. 토스증권 홈 화면으로 이동합니다.`);
       navigate('/');
     }
   };
@@ -58,7 +58,7 @@ function Auth() {
     }
 
     // Mock API success using MemberDTO properties
-    alert(`축하합니다! Bready & Co.의 회원이 되셨습니다.\n\n[가입 정보]\n- 아이디: ${signupUsername}\n- 이름: ${signupName}\n- 이메일: ${signupEmail}\n\n${signupName} 고객님께 첫 가입 웰컴 쿠폰 1,000원이 증정되었습니다.`);
+    alert(`축하합니다! 토스증권의 회원이 되셨습니다.\n\n[가입 정보]\n- 아이디: ${signupUsername}\n- 이름: ${signupName}\n- 이메일: ${signupEmail}\n\n${signupName}님께 첫 가입 웰컴 소수점 주식 1,000원 상당이 증정되었습니다.`);
     setActiveTab('login'); // Switch tab to login screen
   };
 
@@ -191,13 +191,13 @@ function Auth() {
         <div className="auth-container-grid">
           {/* Left Column: Branding Benefits */}
           <div className="auth-brand-left">
-            <span className="section-subtitle">welcome to family</span>
+            <span className="section-subtitle">toss securities</span>
             <h1 style={{ fontSize: '2.5rem', color: 'var(--text-heading)', lineHeight: 1.3 }}>
-              Bready & Co.의<br />
-              특별한 프렌즈가 되어보세요
+              토스증권의<br />
+              특별한 투자 파트너가 되어보세요
             </h1>
             <p style={{ color: 'var(--text-light)', fontSize: '0.98rem', lineHeight: 1.7 }}>
-              회원가입만 하셔도 갓 구운 고소한 식빵을 구매하실 때 쓰이는 웰컴 적립 혜택 및 회원 단독 타임 쿠폰이 제공됩니다.
+              회원가입 즉시 실시간 글로벌 증시 시세 조회 및 웰컴 소수점 주식 증정 이벤트에 동참하실 수 있습니다.
             </p>
 
             <div className="benefit-card-box">
@@ -206,9 +206,9 @@ function Auth() {
                   <Gift size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '4px' }}>웰컴 1,000원 쿠폰팩 즉시 지급</h4>
+                  <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '4px' }}>웰컴 소수점 주식 1,000원 즉시 지급</h4>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
-                    가입 완료 즉시 첫 구매 시 전 품목에 1,000원 할인이 바로 적용되는 신규 가입 웰컴 쿠폰이 발행됩니다.
+                    가입 완료 즉시 첫 거래에 바로 사용할 수 있거나 보유 가능한 미국 우량 소수점 주식 1,000원 상당이 즉시 지급됩니다.
                   </p>
                 </div>
               </div>
@@ -218,9 +218,9 @@ function Auth() {
                   <Sparkles size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '4px' }}>구매 금액의 3% 무제한 자동 적립</h4>
+                  <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '4px' }}>거래 수수료 업계 최저 0.015% 혜택</h4>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
-                    식빵 구매 시마다 구매 대금의 3%가 Bready 포인트로 적립되며, 1,000포인트 이상 시 현금처럼 바로 사용이 가능합니다.
+                    국내외 주식 거래 시 업계 최저 수준인 0.015% 우대 수수료율이 자동 적용되어 매매 비용 부담을 대폭 덜어드립니다.
                   </p>
                 </div>
               </div>
@@ -230,9 +230,9 @@ function Auth() {
                   <Smile size={20} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '4px' }}>단골 회원 생일 축하 특별 쿠폰</h4>
+                  <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '4px' }}>매년 생일 축하 투자 지원금 100%</h4>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-light)' }}>
-                    고객님의 가장 특별한 날, 세상에서 가장 촉촉하고 부드러운 밤 식빵 1종 무료 교환 쿠폰이 100% 발급됩니다.
+                    소중한 투자자님의 가장 특별한 날, 매년 생일 축하 배당주 1주 상당이 랜덤 주식 뽑기로 100% 무상 지급됩니다.
                   </p>
                 </div>
               </div>
@@ -401,7 +401,7 @@ function Auth() {
                         id="signupEmailInput"
                         type="email" 
                         className="form-input" 
-                        placeholder="example@bready.com" 
+                        placeholder="example@toss.com" 
                         required
                         value={signupEmail}
                         onChange={(e) => setSignupEmail(e.target.value)}
@@ -419,7 +419,7 @@ function Auth() {
                       style={{ width: '16px', height: '16px', cursor: 'pointer', marginTop: '3px' }}
                     />
                     <label htmlFor="termsCheck" style={{ cursor: 'pointer', fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--text-light)' }}>
-                      Bready & Co.의 <strong style={{ color: 'var(--text-heading)' }}>이용약관</strong> 및 <strong style={{ color: 'var(--text-heading)' }}>개인정보 수집/이용 방침</strong>에 대해 충분히 숙지하였으며 이에 동의합니다. (필수)
+                      토스증권의 <strong style={{ color: 'var(--text-heading)' }}>이용약관</strong> 및 <strong style={{ color: 'var(--text-heading)' }}>개인정보 수집/이용 방침</strong>에 대해 충분히 숙지하였으며 이에 동의합니다. (필수)
                     </label>
                   </div>
 

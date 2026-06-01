@@ -1,320 +1,117 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, User, Menu, X, Flame } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
+  const [user, setUser] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
-  // Scroll detection for glassy styling
+  // Sync authentication state from localStorage
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const username = localStorage.getItem('username');
+    const name = localStorage.getItem('name');
+    if (username && name) {
+      setUser({ username, name });
+    } else {
+      setUser(null);
+    }
+  }, [location.pathname]); // Update when changing pages
+
+  // Sync dark mode configuration
+  useEffect(() => {
+    const isDark = localStorage.getItem('theme') === 'dark';
+    setDarkMode(isDark);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, []);
 
-  // Close mobile menu on page transition
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location]);
+  const handleLogout = () => {
+    localStorage.clear();
+    setUser(null);
+    navigate('/');
+  };
 
-  const isActive = (path) => {
-    return location.pathname === path ? 'nav-link-active' : '';
+  const toggleDarkMode = () => {
+    const nextDark = !darkMode;
+    setDarkMode(nextDark);
+    if (nextDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
   };
 
   return (
-    <>
-      <style>{`
-        .header-outer {
-          position: sticky;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 1000;
-          transition: var(--transition);
-          background-color: ${isScrolled ? 'rgba(252, 250, 247, 0.85)' : 'var(--bg)'};
-          backdrop-filter: ${isScrolled ? 'blur(12px)' : 'none'};
-          border-bottom: 1px solid ${isScrolled ? 'var(--border)' : 'transparent'};
-          box-shadow: ${isScrolled ? '0 4px 20px rgba(139, 90, 43, 0.04)' : 'none'};
-        }
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-toss-dark-bg/80 border-b border-toss-gray-200 dark:border-toss-dark-border transition-colors duration-250">
+      <div className="max-w-5xl mx-auto px-5 h-16 flex items-center justify-between">
+        
+        {/* Toss-like Brand Logo */}
+        <Link to="/" className="flex items-center space-x-2 text-2xl font-extrabold text-toss-blue tracking-tight select-none">
+          <span>toss</span>
+          <span className="text-toss-gray-900 dark:text-toss-gray-50 font-semibold text-lg">주식</span>
+        </Link>
 
-        .header-container {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 80px;
-          padding: 0 24px;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        /* Logo styling */
-        .logo-link {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-family: var(--font-sans);
-          font-weight: 800;
-          font-size: 1.45rem;
-          color: var(--text-heading);
-          letter-spacing: -0.5px;
-        }
-
-        .logo-icon {
-          color: var(--accent);
-          animation: logoPulse 2s infinite ease-in-out;
-        }
-
-        @keyframes logoPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.08) rotate(5deg); }
-        }
-
-        /* Desktop GNB */
-        .desktop-nav {
-          display: flex;
-          align-items: center;
-          gap: 32px;
-        }
-
-        @media (max-width: 768px) {
-          .desktop-nav { display: none; }
-        }
-
-        .nav-link {
-          font-size: 0.95rem;
-          font-weight: 600;
-          color: var(--text-light);
-          padding: 8px 4px;
-          position: relative;
-        }
-
-        .nav-link:hover {
-          color: var(--primary);
-        }
-
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background-color: var(--primary);
-          transition: var(--transition);
-        }
-
-        .nav-link:hover::after, .nav-link-active::after {
-          width: 100%;
-        }
-
-        .nav-link-active {
-          color: var(--primary) !important;
-        }
-
-        /* Utility Menu (Cart / Account) */
-        .util-menu {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .util-btn {
-          background: none;
-          border: none;
-          color: var(--text);
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 50%;
-          transition: var(--transition);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-        }
-
-        .util-btn:hover {
-          background-color: var(--primary-light);
-          color: var(--primary);
-        }
-
-        .cart-badge {
-          position: absolute;
-          top: 0;
-          right: 0;
-          background-color: var(--accent);
-          color: white;
-          font-size: 0.7rem;
-          font-weight: 700;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 2px solid var(--bg);
-        }
-
-        /* Mobile Hamburger */
-        .mobile-toggle {
-          display: none;
-        }
-
-        @media (max-width: 768px) {
-          .mobile-toggle { display: flex; }
-          .util-btn.account-btn { display: none; }
-        }
-
-        /* Mobile Side Navigation Drawer */
-        .mobile-nav-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(45, 31, 23, 0.4);
-          backdrop-filter: blur(4px);
-          z-index: 999;
-          opacity: 0;
-          visibility: hidden;
-          transition: var(--transition);
-        }
-
-        .mobile-nav-overlay-active {
-          opacity: 1;
-          visibility: visible;
-        }
-
-        .mobile-drawer {
-          position: fixed;
-          top: 0;
-          right: -300px;
-          bottom: 0;
-          width: 280px;
-          background-color: var(--card-bg);
-          box-shadow: -10px 0 30px rgba(139, 90, 43, 0.1);
-          z-index: 1000;
-          transition: var(--transition);
-          padding: 40px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 32px;
-        }
-
-        .mobile-drawer-active {
-          right: 0;
-        }
-
-        .mobile-drawer-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border-bottom: 1px solid var(--border);
-          padding-bottom: 20px;
-        }
-
-        .mobile-drawer-links {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .mobile-nav-link {
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: var(--text-heading);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 8px 0;
-          border-bottom: 1px solid rgba(239, 231, 222, 0.5);
-        }
-
-        .mobile-nav-link-active {
-          color: var(--primary);
-        }
-      `}</style>
-
-      <header className="header-outer">
-        <div className="header-container">
-          {/* Logo */}
-          <Link to="/" className="logo-link">
-            <Flame className="logo-icon" size={26} fill="currentColor" />
-            <span>Bready & Co.</span>
-          </Link>
-
-          {/* Desktop GNB */}
-          <nav className="desktop-nav">
-            <Link to="/intro" className={`nav-link ${isActive('/intro')}`}>브랜드 스토리</Link>
-            <Link to="/products" className={`nav-link ${isActive('/products')}`}>식빵 메뉴</Link>
-            <Link to="/notice" className={`nav-link ${isActive('/notice')}`}>소식 & 이벤트</Link>
-            <Link to="/qna" className={`nav-link ${isActive('/qna')}`}>Q&A 게시판</Link>
-          </nav>
-
-          {/* Utility Menu */}
-          <div className="util-menu">
-            <Link to="/products" className="util-btn" aria-label="Cart">
-              <ShoppingBag size={20} />
-              <span className="cart-badge">2</span>
-            </Link>
-            <Link to="/auth" className="util-btn account-btn" aria-label="Account">
-              <User size={20} />
-            </Link>
-            <button 
-              className="util-btn mobile-toggle" 
-              onClick={() => setIsMenuOpen(true)}
-              aria-label="Open menu"
-            >
-              <Menu size={22} />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Mobile Drawer Overlay */}
-      <div 
-        className={`mobile-nav-overlay ${isMenuOpen ? 'mobile-nav-overlay-active' : ''}`}
-        onClick={() => setIsMenuOpen(false)}
-      />
-
-      {/* Mobile Side Drawer */}
-      <div className={`mobile-drawer ${isMenuOpen ? 'mobile-drawer-active' : ''}`}>
-        <div className="mobile-drawer-header">
-          <Link to="/" className="logo-link" onClick={() => setIsMenuOpen(false)}>
-            <Flame className="logo-icon" size={22} fill="currentColor" />
-            <span style={{ fontSize: '1.25rem' }}>Bready & Co.</span>
-          </Link>
-          <button className="util-btn" onClick={() => setIsMenuOpen(false)}>
-            <X size={22} />
-          </button>
-        </div>
-
-        <nav className="mobile-drawer-links">
-          <Link to="/intro" className={`mobile-nav-link ${isActive('/intro')}`} onClick={() => setIsMenuOpen(false)}>
-            브랜드 스토리
-          </Link>
-          <Link to="/products" className={`mobile-nav-link ${isActive('/products')}`} onClick={() => setIsMenuOpen(false)}>
-            식빵 메뉴
-          </Link>
-          <Link to="/notice" className={`mobile-nav-link ${isActive('/notice')}`} onClick={() => setIsMenuOpen(false)}>
-            소식 & 이벤트
-          </Link>
-          <Link to="/qna" className={`mobile-nav-link ${isActive('/qna')}`} onClick={() => setIsMenuOpen(false)}>
-            Q&A 게시판
-          </Link>
-          <Link to="/auth" className={`mobile-nav-link ${isActive('/auth')}`} onClick={() => setIsMenuOpen(false)}>
-            로그인 / 회원가입
-          </Link>
+        {/* Navigation Menu */}
+        <nav className="hidden md:flex items-center space-x-8 text-[15px] font-semibold text-toss-gray-600 dark:text-toss-gray-300">
+          <Link to="/" className={`hover:text-toss-blue transition-colors ${location.pathname === '/' ? 'text-toss-blue' : ''}`}>홈</Link>
+          <Link to="/board" className={`hover:text-toss-blue transition-colors ${location.pathname.startsWith('/board') ? 'text-toss-blue' : ''}`}>토론방</Link>
+          <Link to="/notice" className={`hover:text-toss-blue transition-colors ${location.pathname.startsWith('/notice') ? 'text-toss-blue' : ''}`}>공지사항</Link>
+          {user && (
+            <Link to="/profile" className={`hover:text-toss-blue transition-colors ${location.pathname === '/profile' ? 'text-toss-blue' : ''}`}>포트폴리오</Link>
+          )}
         </nav>
+
+        {/* Utility / Auth Actions */}
+        <div className="flex items-center space-x-4">
+          
+          {/* Dark Mode Toggle Switch */}
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full hover:bg-toss-gray-100 dark:hover:bg-toss-dark-card text-toss-gray-500 dark:text-toss-gray-400 transition-colors"
+            title="테마 변경"
+          >
+            {darkMode ? (
+              // Sun icon for dark mode (click to switch to light)
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-12.37c-.39-.39-.39-1.03 0-1.41s1.03-.39 1.41 0l1.06 1.06c.39.39.39 1.03 0 1.41s-1.03.39-1.41 0l-1.06-1.06zM7.05 18.01c-.39-.39-.39-1.03 0-1.41s1.03-.39 1.41 0l1.06 1.06c.39.39.39 1.03 0 1.41s-1.03.39-1.41 0l-1.06-1.06z"/>
+              </svg>
+            ) : (
+              // Moon icon for light mode (click to switch to dark)
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M12.3 2a10 10 0 0 0-1.9 19.5 10 10 0 0 0 11.5-12.2 7.5 7.5 0 0 1-9.6-9.6c.3-.6.1-1.3-.5-1.5z"/>
+              </svg>
+            )}
+          </button>
+
+          {/* User Account / Login State */}
+          {user ? (
+            <div className="flex items-center space-x-3 text-sm">
+              <span className="hidden sm:inline font-semibold text-toss-gray-800 dark:text-toss-gray-200">{user.name}님</span>
+              <button 
+                onClick={handleLogout}
+                className="px-3 py-1.5 rounded-toss-sm bg-toss-gray-100 hover:bg-toss-gray-200 dark:bg-toss-dark-card dark:hover:bg-toss-dark-border text-toss-gray-700 dark:text-toss-gray-300 font-bold transition-colors"
+              >
+                로그아웃
+              </button>
+            </div>
+          ) : (
+            <Link 
+              to="/auth"
+              className="px-4 py-1.5 rounded-toss-sm bg-toss-blue hover:bg-toss-blue-hover text-white font-bold text-sm transition-colors shadow-toss hover:shadow-toss-hover"
+            >
+              로그인
+            </Link>
+          )}
+
+        </div>
       </div>
-    </>
+    </header>
   );
 }
 
