@@ -18,8 +18,7 @@ public class MemberService {
     private final MemberProfileRepository memberProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-
-    private static final String UPLOAD_DIR = "C:/upload/members/";
+    private final ProfileImageService profileImageService;
 
     @Transactional
     public MemberDTO join(MemberDTO member, MultipartFile profileImage) {
@@ -42,44 +41,13 @@ public class MemberService {
 
         // 프로필 이미지가 첨부된 경우 물리 및 DB 연계 저장 처리
         if (profileImage != null && !profileImage.isEmpty()) {
-            try {
-                // 물리 디렉토리가 없으면 자동 생성 시도
-                String uploadPath = UPLOAD_DIR;
-                File dir = new File(uploadPath);
-                
-                // 만약 C 드라이브가 존재하지 않거나 쓰기 권한이 차단되어 폴더 생성에 실패하는 로컬/테스트 환경인 경우
-                // 워크스페이스 내의 상대경로(upload/members/)로 안전하게 자동 폴백(Fallback) 처리
-                if (!dir.exists() && !dir.mkdirs()) {
-                    uploadPath = "upload/members/";
-                    dir = new File(uploadPath);
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                }
-
-                // 고유 식별 명칭(UUID)을 가미한 파일명 정의
-                String originalFileName = profileImage.getOriginalFilename();
-                String storedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
-                String filePath = uploadPath + storedFileName;
-                long fileSize = profileImage.getSize();
-
-                // 서버 디렉토리에 물리 복사 저장
-                profileImage.transferTo(new File(filePath));
-
-                // 1:1 관계의 프로필 레코드 객체 생성 및 연동
-                MemberProfileDTO profile = new MemberProfileDTO();
-                profile.setOriginalFileName(originalFileName);
-                profile.setStoredFileName(storedFileName);
-                profile.setFilePath(filePath);
-                profile.setFileSize(fileSize);
-                profile.setCreatedAt(LocalDateTime.now());
+            // ProfileImageService를 활용해 물리 저장소 보관 및 DTO 생성을 위임
+            MemberProfileDTO profile = profileImageService.saveProfileImage(profileImage, "members");
+            if (profile != null) {
                 profile.setMember(savedMember); // 1:1 주인 연동
-
                 // 관계의 주인인 프로필을 DB에 저장
                 memberProfileRepository.save(profile);
                 savedMember.setProfile(profile); // 캐시 영속성 동기화
-            } catch (Exception e) {
-                throw new RuntimeException("프로필 이미지 물리 저장 도중 에러가 발생했습니다: " + e.getMessage(), e);
             }
         }
 
