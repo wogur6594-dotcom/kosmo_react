@@ -33,15 +33,15 @@
   - [x] Stateless(무상태) 세션 정책 구성 및 CSRF 방지 비활성화
   - [x] `JwtAuthenticationFilter`를 만들어 `UsernamePasswordAuthenticationFilter` 전단에 삽입
   - [x] 회원가입/로그인/주식조회 등 비인증 접근 허용 목록(`requestMatchers`) 명시
-- [ ] **2.3. 회원 인증 API 및 로직 개발**
-  - [ ] `tb_users` 테이블에 연동되는 `MemberDTO` (Entity) 및 Repository 구현
-  - [ ] BCrypt 해시 인코더를 활용한 패스워드 단방향 암호화 가입 기능 (`/api/member/join`)
-  - [ ] 로그인 성공 시 JWT 토큰 및 핵심 메타데이터 반환 API 구현 (`/api/member/login`)
-  - [ ] HTTP Bearer 헤더 기반 내 프로필 조회 API 구현 (`/api/member/profile`)
-- [ ] **2.4. 프론트엔드 인증 연동 컴포넌트 개발**
-  - [ ] `/utils/api.js` 공통 fetch 모듈 구현 (로컬스토리지 JWT 자동 탑재 기능 포함)
-  - [ ] `/auth` 페이지 구현: 토스 특유의 둥근 모서리 로그인/회원가입 탭 토글 모던 카드 디자인
-  - [ ] 로그인 후 Context/State를 활용한 내비게이션바의 로그인 상태 표시 동적 전환
+- [x] **2.3. 회원 인증 API 및 로직 개발**
+  - [x] `tb_users` 테이블에 연동되는 `MemberDTO` (Entity) 및 Repository 구현
+  - [x] BCrypt 해시 인코더를 활용한 패스워드 단방향 암호화 가입 기능 (`/api/member/join`)
+  - [x] 로그인 성공 시 JWT 토큰 및 핵심 메타데이터 반환 API 구현 (`/api/member/login`)
+  - [x] HTTP Bearer 헤더 기반 내 프로필 조회 API 구현 (`/api/member/profile`)
+- [x] **2.4. 프론트엔드 인증 연동 컴포넌트 개발**
+  - [x] `/utils/api.js` 공통 fetch 모듈 구현 (로컬스토리지 JWT 자동 탑재 기능 포함)
+  - [x] `/auth` 페이지 구현: 토스 특유의 둥근 모서리 로그인/회원가입 탭 토글 모던 카드 디자인
+  - [x] 로그인 후 Context/State를 활용한 내비게이션바의 로그인 상태 표시 동적 전환
 
 ---
 
