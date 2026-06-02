@@ -28,4 +28,29 @@ public class KosmoReactApplication {
             }
         };
     }
+
+    @Bean
+    public CommandLineRunner adminAccountSeeder(
+            com.jh.app.member.MemberRepository memberRepository,
+            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+        return args -> {
+            try {
+                String adminUsername = "admin";
+                if (!memberRepository.existsById(adminUsername)) {
+                    com.jh.app.member.MemberDTO admin = new com.jh.app.member.MemberDTO();
+                    admin.setUsername(adminUsername);
+                    admin.setPassword(passwordEncoder.encode("admin1234"));
+                    admin.setName("최고관리자");
+                    admin.setEmail("admin@toss.com");
+                    
+                    memberRepository.save(admin);
+                    System.out.println(">>> SUCCESSFULLY SEEDED DEFAULT ADMIN ACCOUNT ('admin' / 'admin1234') <<<");
+                } else {
+                    System.out.println(">>> DEFAULT ADMIN ACCOUNT ALREADY EXISTS <<<");
+                }
+            } catch (Exception e) {
+                System.err.println(">>> ADMIN SEEDING ERROR: " + e.getMessage());
+            }
+        };
+    }
 }
