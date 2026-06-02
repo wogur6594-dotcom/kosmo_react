@@ -19,7 +19,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String UPLOAD_DIR = "D:/upload/members/";
+    private static final String UPLOAD_DIR = "C:/upload/members/";
 
     @Transactional
     public MemberDTO join(MemberDTO member, MultipartFile profileImage) {
@@ -47,7 +47,7 @@ public class MemberService {
                 String uploadPath = UPLOAD_DIR;
                 File dir = new File(uploadPath);
                 
-                // 만약 D 드라이브가 존재하지 않아 폴더 생성에 실패하는 로컬/테스트 환경인 경우
+                // 만약 C 드라이브가 존재하지 않거나 쓰기 권한이 차단되어 폴더 생성에 실패하는 로컬/테스트 환경인 경우
                 // 워크스페이스 내의 상대경로(upload/members/)로 안전하게 자동 폴백(Fallback) 처리
                 if (!dir.exists() && !dir.mkdirs()) {
                     uploadPath = "upload/members/";
