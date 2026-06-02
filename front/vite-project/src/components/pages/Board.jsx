@@ -45,11 +45,24 @@ const MOCK_POSTS = [
 
 function Board() {
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStock, setSelectedStock] = useState('ALL');
 
-  const filteredPosts = MOCK_POSTS.filter(post => {
-    const matchesSearch = post.title.includes(searchTerm) || post.content.includes(searchTerm);
+  // 로컬스토리지로부터 게시물 데이터 실시간 로드 및 기본 시드 적재
+  React.useEffect(() => {
+    const localPosts = localStorage.getItem('toss_board_posts');
+    if (localPosts) {
+      setPosts(JSON.parse(localPosts));
+    } else {
+      localStorage.setItem('toss_board_posts', JSON.stringify(MOCK_POSTS));
+      setPosts(MOCK_POSTS);
+    }
+  }, []);
+
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          post.content.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStock = selectedStock === 'ALL' || post.stockSymbol === selectedStock;
     return matchesSearch && matchesStock;
   });

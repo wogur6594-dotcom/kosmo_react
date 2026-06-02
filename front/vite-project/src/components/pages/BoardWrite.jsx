@@ -17,8 +17,40 @@ function BoardWrite() {
       return;
     }
 
-    alert(`토론글이 주주 토론방에 성공적으로 게시되었습니다!\n\n[등록 정보]\n- 종목: ${stockSymbol === '005930' ? '삼성전자' : stockSymbol === 'TSLA' ? '테슬라' : '엔비디아'}\n- 제목: ${title}`);
-    navigate('/board');
+    try {
+      const rawPosts = localStorage.getItem('toss_board_posts');
+      const existingPosts = rawPosts ? JSON.parse(rawPosts) : [];
+
+      let stockName = '삼성전자';
+      if (stockSymbol === 'TSLA') {
+        stockName = '테슬라';
+      } else if (stockSymbol === 'NVDA') {
+        stockName = '엔비디아';
+      }
+
+      const loggedInName = localStorage.getItem('name') || localStorage.getItem('username') || '익명의 주주';
+
+      const newPost = {
+        id: Date.now(),
+        title: title,
+        content: content,
+        author: loggedInName,
+        date: new Date().toISOString().substring(0, 10),
+        views: 1,
+        likes: 0,
+        comments: 0,
+        stockSymbol: stockSymbol,
+        stockName: stockName
+      };
+
+      localStorage.setItem('toss_board_posts', JSON.stringify([newPost, ...existingPosts]));
+
+      alert('주주 토론방에 의견이 성공적으로 게시되었습니다.');
+      navigate('/board');
+    } catch (err) {
+      console.error('토론글 저장 에러:', err);
+      alert('토론글 저장 중 오류가 발생했습니다.');
+    }
   };
 
   return (
