@@ -13,10 +13,11 @@ function BoardDetail() {
   const [likesCount, setLikesCount] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
-  // Generate Mock Post Details Based on ID
+  // Generate Mock Post Details Based on ID from localStorage
   useEffect(() => {
-    const MOCK_POSTS = {
-      '1': {
+    const MOCK_POST_LIST = [
+      {
+        id: 1,
         title: '삼성전자 오늘 시외 상승 이유 아시는 분 계신가요?',
         content: '엔비디아 HBM 공급망 진입 루머가 또 도는 것 같네요. 이번에는 진짜 확정일지 궁금합니다. 평단 76,000원에 물려있는데 드디어 탈출각 주나요?',
         author: '개미왕자',
@@ -26,7 +27,8 @@ function BoardDetail() {
         stockSymbol: '005930',
         stockName: '삼성전자'
       },
-      '2': {
+      {
+        id: 2,
         title: '테슬라 이번 2분기 인도량 예측치 분석해봅니다',
         content: '기가 상하이 가동률 및 미국 현지 프로모션 추이 고려했을 때, 애널리스트 평균 컨센서스인 43만 대 수준은 가뿐히 넘어설 것으로 보입니다. FSD 12.4 버전 롤아웃 지연이 변수이지만 장기 관점은 매우 우상향입니다.',
         author: '엘론머스크팬',
@@ -36,7 +38,8 @@ function BoardDetail() {
         stockSymbol: 'TSLA',
         stockName: '테슬라'
       },
-      '3': {
+      {
+        id: 3,
         title: '엔비디아 액분 이후 매수 타이밍 고민되네요',
         content: '단기 과열 양상 같기도 하고, 주식 분할 이후 150불 선에서 횡보하다가 3분기 실적 시즌 앞두고 다시 전고점 돌파 쏠 것 같네요. 그냥 매일 적립식 매수로 대응하는 게 최선일까요?',
         author: '반도체러버',
@@ -46,9 +49,18 @@ function BoardDetail() {
         stockSymbol: 'NVDA',
         stockName: '엔비디아'
       }
-    };
+    ];
 
-    const targetPost = MOCK_POSTS[id] || {
+    const rawPosts = localStorage.getItem('toss_board_posts');
+    let posts = [];
+    if (rawPosts) {
+      posts = JSON.parse(rawPosts);
+    } else {
+      localStorage.setItem('toss_board_posts', JSON.stringify(MOCK_POST_LIST));
+      posts = MOCK_POST_LIST;
+    }
+
+    const targetPost = posts.find(p => String(p.id) === String(id)) || {
       title: '일반 주주 토론글',
       content: '본문 내용이 존재하지 않거나 찾을 수 없습니다.',
       author: '비공개 주주',
