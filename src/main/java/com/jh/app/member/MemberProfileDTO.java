@@ -21,8 +21,7 @@ public class MemberProfileDTO {
     @Column(name = "stored_file_name", nullable = false, unique = true)
     private String storedFileName;
 
-    @Column(name = "file_path", nullable = false)
-    private String filePath;
+
 
     @Column(name = "file_size", nullable = false)
     private Long fileSize;

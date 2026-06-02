@@ -64,7 +64,6 @@ public class ProfileImageService {
             MemberProfileDTO profile = new MemberProfileDTO();
             profile.setOriginalFileName(originalFileName);
             profile.setStoredFileName(storedFileName);
-            profile.setFilePath(filePath);
             profile.setFileSize(fileSize);
             profile.setCreatedAt(LocalDateTime.now());
             
@@ -72,6 +71,29 @@ public class ProfileImageService {
         } catch (IOException e) {
             throw new RuntimeException("물리 파일 저장 중 IO 에러가 발생했습니다: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * 외부 YML/Properties 주입 설정값과 보관중인 파일 고유명을 런타임에 결합하여 물리적 파일의 절대경로를 동적으로 실시간 해소(Resolve)
+     * @param storedFileName DB에 영속 보관되어 있던 고유 파일 UUID 명칭
+     * @param domain 비즈니스 도메인 명칭 또는 키 (예: "members", "boards")
+     * @return 현재 구동 환경 OS에 부합하는 파일의 최종 물리 절대 경로
+     */
+    public String getPhysicalPath(String storedFileName, String domain) {
+        if (storedFileName == null || storedFileName.isEmpty()) {
+            return null;
+        }
+
+        String subDir = getSubDirByDomain(domain);
+        String targetBasePath = baseDir + "/" + subDir + "/";
+        File dir = new File(targetBasePath);
+
+        // 테스트/로컬 볼륨의 C드라이브 미할당 상태 감지 시, 워크스페이스 내 상대경로로 동적 우회(Fallback) 처리
+        if (!dir.exists()) {
+            targetBasePath = "upload/" + subDir + "/";
+        }
+
+        return targetBasePath + storedFileName;
     }
 
     /**
