@@ -32,3 +32,6 @@ dist/
 # OS specific files
 Thumbs.db
 .DS_Store
+
+# Uploaded Files
+upload/

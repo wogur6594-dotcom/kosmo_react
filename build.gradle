@@ -38,4 +38,42 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    
+    // .env 파일의 환경 변수들을 테스트 구동 JVM에 주입
+    if (file(".env").exists()) {
+        file(".env").readLines().each { line ->
+            def trimmedLine = line.trim()
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("=")) {
+                def parts = trimmedLine.split("=", 2)
+                def key = parts[0].trim()
+                def value = parts[1].trim()
+                if (value.startsWith("\"") && value.endsWith("\"")) {
+                    value = value.substring(1, value.length() - 1)
+                } else if (value.startsWith("'") && value.endsWith("'")) {
+                    value = value.substring(1, value.length() - 1)
+                }
+                environment key, value
+            }
+        }
+    }
+}
+
+tasks.named('bootRun') {
+    // .env 파일의 환경 변수들을 bootRun JVM 프로세스에 주입
+    if (file(".env").exists()) {
+        file(".env").readLines().each { line ->
+            def trimmedLine = line.trim()
+            if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("#") && trimmedLine.contains("=")) {
+                def parts = trimmedLine.split("=", 2)
+                def key = parts[0].trim()
+                def value = parts[1].trim()
+                if (value.startsWith("\"") && value.endsWith("\"")) {
+                    value = value.substring(1, value.length() - 1)
+                } else if (value.startsWith("'") && value.endsWith("'")) {
+                    value = value.substring(1, value.length() - 1)
+                }
+                environment key, value
+            }
+        }
+    }
 }

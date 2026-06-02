@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import { Lock, Mail, User, Phone, CheckCircle, Gift, Sparkles, Smile } from 'lucide-react';
+import { api } from '../../utils/api';
 
 function Auth() {
   const navigate = useNavigate();
@@ -18,29 +19,46 @@ function Auth() {
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [signupName, setSignupName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!loginUsername || !loginPassword) return;
 
-    // Admin authorization mock (Aligned with admin account credentials)
-    if (loginUsername === 'admin' && loginPassword === 'admin1234') {
-      localStorage.setItem('isAdmin', 'true');
-      localStorage.setItem('username', '최고 관리자');
-      localStorage.setItem('isLoggedIn', 'true');
-      alert('관리자 계정으로 로그인하였습니다. 이제 공지사항 등록 권한이 활성화됩니다.');
-      navigate('/notice');
-    } else {
-      localStorage.setItem('isAdmin', 'false');
-      localStorage.setItem('username', loginUsername);
-      localStorage.setItem('isLoggedIn', 'true');
-      alert(`반갑습니다! ${loginUsername}님, 로그인에 성공하셨습니다. 토스증권 홈 화면으로 이동합니다.`);
-      navigate('/');
+    try {
+      const response = await api.post('/api/member/login', {
+        username: loginUsername,
+        password: loginPassword
+      });
+
+      if (response.status === 'success') {
+        const data = response.data;
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('name', data.name);
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        if (data.username === 'admin') {
+          localStorage.setItem('isAdmin', 'true');
+          alert('관리자 계정으로 로그인하였습니다. 이제 공지사항 등록 권한이 활성화됩니다.');
+          navigate('/notice');
+        } else {
+          localStorage.setItem('isAdmin', 'false');
+          alert(`반갑습니다! ${data.name || data.username}님, 로그인에 성공하셨습니다.`);
+          navigate('/');
+        }
+        window.location.reload();
+      } else {
+        alert(response.message || '로그인에 실패하였습니다.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('로그인 처리 중 에러가 발생했습니다. 아이디와 비밀번호를 확인해 주세요.');
     }
   };
 
-  const handleSignupSubmit = (e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault();
     if (!signupUsername || !signupPassword || !signupConfirmPassword || !signupName || !signupEmail) {
       alert('모든 필수 입력 사항을 입력해 주세요.');
@@ -57,9 +75,29 @@ function Auth() {
       return;
     }
 
-    // Mock API success using MemberDTO properties
-    alert(`축하합니다! 토스증권의 회원이 되셨습니다.\n\n[가입 정보]\n- 아이디: ${signupUsername}\n- 이름: ${signupName}\n- 이메일: ${signupEmail}\n\n${signupName}님께 첫 가입 웰컴 소수점 주식 1,000원 상당이 증정되었습니다.`);
-    setActiveTab('login'); // Switch tab to login screen
+    try {
+      const formData = new FormData();
+      formData.append('username', signupUsername);
+      formData.append('password', signupPassword);
+      formData.append('passwordCheck', signupConfirmPassword);
+      formData.append('name', signupName);
+      formData.append('email', signupEmail);
+      if (profileImage) {
+        formData.append('profileImage', profileImage);
+      }
+
+      const response = await api.postMultipart('/api/member/join', formData);
+
+      if (response.status === 'success') {
+        alert(`축하합니다! 토스증권의 회원이 되셨습니다.\n\n[가입 완료]\n아이디: ${response.data.username}\n이름: ${response.data.name}\n\n1,000원 상당의 웰컴 소수점 주식 혜택 계좌가 생성되었습니다.`);
+        setActiveTab('login');
+      } else {
+        alert(response.message || '회원가입에 실패하였습니다.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('회원가입 처리 중 에러가 발생했습니다. 아이디 중복 혹은 입력값을 확인해 주세요.');
+    }
   };
 
   // Password match visual status using MemberDTO transient field equivalent
@@ -407,6 +445,27 @@ function Auth() {
                         onChange={(e) => setSignupEmail(e.target.value)}
                       />
                     </div>
+                  </div>
+
+                  {/* Profile Image - Optional Attachment */}
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="signupProfileImageInput">프로필 이미지 (선택)</label>
+                    <div className="auth-input-icon-group">
+                      <Smile className="auth-field-icon" size={18} />
+                      <input 
+                        id="signupProfileImageInput"
+                        type="file" 
+                        accept="image/*"
+                        className="form-input" 
+                        style={{ paddingLeft: '44px', paddingTop: '10px' }}
+                        onChange={(e) => setProfileImage(e.target.files[0] || null)}
+                      />
+                    </div>
+                    {profileImage && (
+                      <span className="password-feedback-badge badge-success" style={{ padding: '4px 10px', borderRadius: '12px', marginTop: '8px' }}>
+                        선택된 파일: {profileImage.name} ({Math.round(profileImage.size / 1024)} KB)
+                      </span>
+                    )}
                   </div>
 
                   {/* Terms */}

@@ -24,4 +24,7 @@ public class MemberDTO {
     
     @Column
     private String email;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private MemberProfileDTO profile;
 }

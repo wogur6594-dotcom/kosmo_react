@@ -29,6 +29,21 @@ export const api = {
     return res.json();
   },
 
+  postMultipart: async (path, formData) => {
+    const headers = {};
+    const token = localStorage.getItem('token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method: 'POST',
+      headers: headers,
+      body: formData,
+    });
+    if (!res.ok) throw new Error(await res.text() || 'Multipart POST Request Failed');
+    return res.json();
+  },
+
   put: async (path, body) => {
     const res = await fetch(`${BASE_URL}${path}`, {
       method: 'PUT',
