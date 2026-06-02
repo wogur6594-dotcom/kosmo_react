@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 import Card from '../common/Card';
 import { PenTool, ArrowLeft, ShieldAlert, CheckCircle2, FileText, User, ChevronRight } from 'lucide-react';
+import { api } from '../../utils/api';
 
 function NoticeWrite() {
   const navigate = useNavigate();
@@ -11,16 +12,42 @@ function NoticeWrite() {
   const [author, setAuthor] = useState('토스증권 운영팀');
   const [content, setContent] = useState('');
 
-  const handleSubmit = (e) => {
+  // Sync state with localStorage on mount to guard admin-only access
+  useEffect(() => {
+    const adminSession = localStorage.getItem('isAdmin') === 'true';
+    if (!adminSession) {
+      alert('공지사항 작성 권한은 오직 최고 관리자 계정만 보유하고 있습니다. 소식 목록으로 리다이렉트합니다.');
+      navigate('/notice');
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !content || !author) {
       alert('모든 필수 입력 사항을 기입해 주세요.');
       return;
     }
 
-    // Notice Dummy Submit Logic
-    alert(`공지사항이 성공적으로 등록되었습니다!\n\n[등록 정보]\n- 분류: ${type === 'notice' ? '공지사항' : type === 'event' ? '이벤트' : '안내'}\n- 제목: ${title}\n- 작성자: ${author}`);
-    navigate('/notice');
+    try {
+      const prefix = type === 'notice' ? '[공지] ' : type === 'event' ? '[이벤트] ' : '[안내] ';
+      const fullTitle = title.startsWith('[') ? title : prefix + title;
+
+      const response = await api.post('/api/notice/write', {
+        title: fullTitle,
+        content: content,
+        author: author
+      });
+
+      if (response.status === 'success') {
+        alert('공지사항이 성공적으로 등록되었습니다.');
+        navigate('/notice');
+      } else {
+        alert(response.message || '공지사항 등록에 실패하였습니다.');
+      }
+    } catch (err) {
+      console.error('공지사항 등록 에러:', err);
+      alert('공지사항 등록 요청 중 오류가 발생했습니다. 최고 관리자 세션이 유효한지 확인해 주십시오.');
+    }
   };
 
   return (

@@ -2,6 +2,7 @@ package com.jh.app.notice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,5 +19,10 @@ public class NoticeService {
     public NoticeDTO getDetail(Long id) throws Exception {
         Optional<NoticeDTO> result = noticeRepository.findById(id);
         return result.orElse(null);
+    }
+
+    public NoticeDTO write(NoticeDTO notice) {
+        notice.setCreateAt(LocalDateTime.now());
+        return noticeRepository.save(notice);
     }
 }
