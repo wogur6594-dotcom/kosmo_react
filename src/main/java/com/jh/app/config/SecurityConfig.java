@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/test").permitAll()
                 // Require auth for writings
                 .requestMatchers("/api/notice/write").authenticated()
-                .requestMatchers("/api/board/write", "/api/board/edit/**", "/api/board/delete/**").authenticated()
+                .requestMatchers("/api/board/write", "/api/board/comment/write", "/api/board/like/**", "/api/board/edit/**", "/api/board/delete/**").authenticated()
                 .requestMatchers("/api/comment/**").authenticated()
                 .anyRequest().permitAll()
             )

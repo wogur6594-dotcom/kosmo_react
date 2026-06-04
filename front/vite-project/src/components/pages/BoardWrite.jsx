@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 import Card from '../common/Card';
 import { ArrowLeft, MessageSquare, AlertCircle, Sparkles } from 'lucide-react';
+import { api } from '../../utils/api';
 
 function BoardWrite() {
   const navigate = useNavigate();
@@ -10,7 +11,16 @@ function BoardWrite() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
-  const handleSubmit = (e) => {
+  // 비로그인 사용자 글쓰기 불법 접근 차단 가드
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인이 필요한 서비스입니다. 로그인 화면으로 이동합니다.');
+      navigate('/auth');
+    }
+  }, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || !content) {
       alert('모든 필수 항목을 채워주세요.');
@@ -18,9 +28,6 @@ function BoardWrite() {
     }
 
     try {
-      const rawPosts = localStorage.getItem('toss_board_posts');
-      const existingPosts = rawPosts ? JSON.parse(rawPosts) : [];
-
       let stockName = '삼성전자';
       if (stockSymbol === 'TSLA') {
         stockName = '테슬라';
@@ -28,28 +35,23 @@ function BoardWrite() {
         stockName = '엔비디아';
       }
 
-      const loggedInName = localStorage.getItem('name') || localStorage.getItem('username') || '익명의 주주';
-
-      const newPost = {
-        id: Date.now(),
-        title: title,
-        content: content,
-        author: loggedInName,
-        date: new Date().toISOString().substring(0, 10),
-        views: 1,
-        likes: 0,
-        comments: 0,
-        stockSymbol: stockSymbol,
-        stockName: stockName
+      const postData = {
+        title,
+        content,
+        stockSymbol,
+        stockName
       };
 
-      localStorage.setItem('toss_board_posts', JSON.stringify([newPost, ...existingPosts]));
-
-      alert('주주 토론방에 의견이 성공적으로 게시되었습니다.');
-      navigate('/board');
+      const res = await api.post('/api/board/write', postData);
+      if (res.status === 'success') {
+        alert('주주 토론방에 의견이 성공적으로 게시되었습니다.');
+        navigate('/board');
+      } else {
+        alert(res.message || '글 등록 실패');
+      }
     } catch (err) {
       console.error('토론글 저장 에러:', err);
-      alert('토론글 저장 중 오류가 발생했습니다.');
+      alert('토론글 저장 중 오류가 발생했습니다. 로그인을 다시 확인해 주세요.');
     }
   };
 

@@ -1,47 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import { Search, Calendar, User, MessageSquare, Heart, Edit3, ChevronRight } from 'lucide-react';
+import { api } from '../../utils/api';
 
-const MOCK_POSTS = [
-  {
-    id: 1,
-    title: '삼성전자 오늘 시외 상승 이유 아시는 분 계신가요?',
-    content: '엔비디아 HBM 공급망 진입 루머가 또 도는 것 같네요. 이번에는 진짜 확정일지 궁금합니다. 평단 76,000원에 물려있는데 드디어 탈출각 주나요?',
-    author: '개미왕자',
-    date: '2026-06-01',
-    views: 452,
-    likes: 24,
-    comments: 8,
-    stockSymbol: '005930',
-    stockName: '삼성전자'
-  },
-  {
-    id: 2,
-    title: '테슬라 이번 2분기 인도량 예측치 분석해봅니다',
-    content: '기가 상하이 가동률 및 미국 현지 프로모션 추이 고려했을 때, 애널리스트 평균 컨센서스인 43만 대 수준은 가뿐히 넘어설 것으로 보입니다. FSD 12.4 버전 롤아웃 지연이 변수이지만 장기 관점은 매우 우상향입니다.',
-    author: '엘론머스크팬',
-    date: '2026-06-01',
-    views: 890,
-    likes: 72,
-    comments: 19,
-    stockSymbol: 'TSLA',
-    stockName: '테슬라'
-  },
-  {
-    id: 3,
-    title: '엔비디아 액분 이후 매수 타이밍 고민되네요',
-    content: '단기 과열 양상 같기도 하고, 주식 분할 이후 150불 선에서 횡보하다가 3분기 실적 시즌 앞두고 다시 전고점 돌파 쏠 것 같네요. 그냥 매일 적립식 매수로 대응하는 게 최선일까요?',
-    author: '반도체러버',
-    date: '2026-05-31',
-    views: 612,
-    likes: 38,
-    comments: 11,
-    stockSymbol: 'NVDA',
-    stockName: '엔비디아'
-  }
-];
+const MOCK_POSTS = []; // Legacy local storage seed removed
 
 function Board() {
   const navigate = useNavigate();
@@ -49,23 +13,22 @@ function Board() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStock, setSelectedStock] = useState('ALL');
 
-  // 로컬스토리지로부터 게시물 데이터 실시간 로드 및 기본 시드 적재
-  React.useEffect(() => {
-    const localPosts = localStorage.getItem('toss_board_posts');
-    if (localPosts) {
-      setPosts(JSON.parse(localPosts));
-    } else {
-      localStorage.setItem('toss_board_posts', JSON.stringify(MOCK_POSTS));
-      setPosts(MOCK_POSTS);
-    }
-  }, []);
+  // 백엔드 API로부터 필터 및 키워드가 반영된 게시물 페이징 리스트 동적 로드
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await api.get(`/api/board/list?stockSymbol=${selectedStock}&search=${searchTerm}&page=0&size=100`);
+        if (res.status === 'success' && res.data) {
+          setPosts(res.data.content || []);
+        }
+      } catch (err) {
+        console.error('토론방 목록 로드 실패:', err);
+      }
+    };
+    fetchPosts();
+  }, [selectedStock, searchTerm]);
 
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          post.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStock = selectedStock === 'ALL' || post.stockSymbol === selectedStock;
-    return matchesSearch && matchesStock;
-  });
+  const filteredPosts = posts;
 
   return (
     <>
@@ -310,11 +273,11 @@ function Board() {
                       </div>
                       <div className="meta-item-box">
                         <Calendar size={13} />
-                        <span>{post.date}</span>
+                        <span>{post.createAt ? post.createAt.substring(0, 10) : post.date}</span>
                       </div>
                       <div className="meta-item-box">
                         <MessageSquare size={13} />
-                        <span>댓글 {post.comments}개</span>
+                        <span>댓글 {post.comments ? post.comments.length : 0}개</span>
                       </div>
                       <div className="meta-item-box">
                         <Heart size={13} style={{ color: 'var(--stock-up)' }} />

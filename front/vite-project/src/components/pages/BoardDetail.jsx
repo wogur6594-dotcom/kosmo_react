@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import { ArrowLeft, User, Calendar, MessageSquare, Heart, Send, BarChart2 } from 'lucide-react';
+import { api } from '../../utils/api';
 
 function BoardDetail() {
   const { id } = useParams();
@@ -13,97 +14,67 @@ function BoardDetail() {
   const [likesCount, setLikesCount] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
 
-  // Generate Mock Post Details Based on ID from localStorage
+  // 백엔드 API로부터 상세글 정보 및 댓글 목록 로드
   useEffect(() => {
-    const MOCK_POST_LIST = [
-      {
-        id: 1,
-        title: '삼성전자 오늘 시외 상승 이유 아시는 분 계신가요?',
-        content: '엔비디아 HBM 공급망 진입 루머가 또 도는 것 같네요. 이번에는 진짜 확정일지 궁금합니다. 평단 76,000원에 물려있는데 드디어 탈출각 주나요?',
-        author: '개미왕자',
-        date: '2026-06-01',
-        views: 452,
-        likes: 24,
-        stockSymbol: '005930',
-        stockName: '삼성전자'
-      },
-      {
-        id: 2,
-        title: '테슬라 이번 2분기 인도량 예측치 분석해봅니다',
-        content: '기가 상하이 가동률 및 미국 현지 프로모션 추이 고려했을 때, 애널리스트 평균 컨센서스인 43만 대 수준은 가뿐히 넘어설 것으로 보입니다. FSD 12.4 버전 롤아웃 지연이 변수이지만 장기 관점은 매우 우상향입니다.',
-        author: '엘론머스크팬',
-        date: '2026-06-01',
-        views: 890,
-        likes: 72,
-        stockSymbol: 'TSLA',
-        stockName: '테슬라'
-      },
-      {
-        id: 3,
-        title: '엔비디아 액분 이후 매수 타이밍 고민되네요',
-        content: '단기 과열 양상 같기도 하고, 주식 분할 이후 150불 선에서 횡보하다가 3분기 실적 시즌 앞두고 다시 전고점 돌파 쏠 것 같네요. 그냥 매일 적립식 매수로 대응하는 게 최선일까요?',
-        author: '반도체러버',
-        date: '2026-05-31',
-        views: 612,
-        likes: 38,
-        stockSymbol: 'NVDA',
-        stockName: '엔비디아'
+    const fetchDetail = async () => {
+      try {
+        const res = await api.get(`/api/board/detail/${id}?increaseView=true`);
+        if (res.status === 'success' && res.data) {
+          const { post, comments } = res.data;
+          setPost(post);
+          setComments(comments || []);
+          setLikesCount(post.likes);
+        }
+      } catch (err) {
+        console.error('상세조회 실패:', err);
       }
-    ];
-
-    const rawPosts = localStorage.getItem('toss_board_posts');
-    let posts = [];
-    if (rawPosts) {
-      posts = JSON.parse(rawPosts);
-    } else {
-      localStorage.setItem('toss_board_posts', JSON.stringify(MOCK_POST_LIST));
-      posts = MOCK_POST_LIST;
-    }
-
-    const targetPost = posts.find(p => String(p.id) === String(id)) || {
-      title: '일반 주주 토론글',
-      content: '본문 내용이 존재하지 않거나 찾을 수 없습니다.',
-      author: '비공개 주주',
-      date: '2026-06-01',
-      views: 12,
-      likes: 2,
-      stockSymbol: '005930',
-      stockName: '삼성전자'
     };
-
-    setPost(targetPost);
-    setLikesCount(targetPost.likes);
-
-    // Initial mock comments
-    setComments([
-      { id: 1, author: 'HBM전문가', content: '공식 입장이 나기 전까진 중립 기어 박는 게 최고입니다.', date: '2026-06-01' },
-      { id: 2, author: '존버가승리', content: '74층 주주인데 이번엔 진짜 뚫어주길 기도합니다.', date: '2026-06-01' }
-    ]);
+    fetchDetail();
   }, [id]);
 
-  const handleLike = () => {
-    if (hasLiked) {
-      setLikesCount(likesCount - 1);
-      setHasLiked(false);
-    } else {
-      setLikesCount(likesCount + 1);
-      setHasLiked(true);
+  const handleLike = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인이 필요한 서비스입니다.');
+      return;
+    }
+    try {
+      const res = await api.post(`/api/board/like/${id}`);
+      if (res.status === 'success' && res.data) {
+        setLikesCount(res.data.likes);
+        setHasLiked(true);
+      }
+    } catch (err) {
+      console.error('공감 처리 실패:', err);
     }
   };
 
-  const handleCommentSubmit = (e) => {
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!commentInput.trim()) return;
 
-    const newComment = {
-      id: comments.length + 1,
-      author: localStorage.getItem('username') || '게스트 주주',
-      content: commentInput,
-      date: new Date().toISOString().split('T')[0]
-    };
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('로그인이 필요한 서비스입니다. 로그인 화면으로 이동합니다.');
+      navigate('/auth');
+      return;
+    }
 
-    setComments([...comments, newComment]);
-    setCommentInput('');
+    try {
+      const res = await api.post('/api/board/comment/write', {
+        boardId: Number(id),
+        content: commentInput
+      });
+      if (res.status === 'success' && res.data) {
+        setComments([...comments, res.data]);
+        setCommentInput('');
+      } else {
+        alert(res.message || '댓글 등록 실패');
+      }
+    } catch (err) {
+      console.error('댓글 등록 실패:', err);
+      alert('댓글 등록 중 오류가 발생했습니다. 로그인을 확인해 주세요.');
+    }
   };
 
   if (!post) {
@@ -251,7 +222,7 @@ function BoardDetail() {
               
               <div className="post-detail-meta">
                 <div className="meta-item-box"><User size={14} /> 작성자: <strong>{post.author}</strong></div>
-                <div className="meta-item-box"><Calendar size={14} /> {post.date}</div>
+                <div className="meta-item-box"><Calendar size={14} /> {post.createAt ? post.createAt.substring(0, 10) : post.date}</div>
                 <div className="meta-item-box">조회 {post.views}회</div>
               </div>
             </div>
@@ -285,7 +256,7 @@ function BoardDetail() {
                   <div key={c.id} className="comment-item">
                     <div className="comment-meta">
                       <span>{c.author}</span>
-                      <span>{c.date}</span>
+                      <span>{c.createAt ? c.createAt.substring(0, 10) : c.date}</span>
                     </div>
                     <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: 500 }}>{c.content}</p>
                   </div>
