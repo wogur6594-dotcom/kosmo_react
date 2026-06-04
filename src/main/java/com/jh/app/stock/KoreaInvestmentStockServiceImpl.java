@@ -180,4 +180,12 @@ public class KoreaInvestmentStockServiceImpl implements StockService {
         }
         return null;
     }
+
+    @Override
+    public List<StockDTO> searchStocks(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        return stockRepository.searchStocks(query.trim());
+    }
 }

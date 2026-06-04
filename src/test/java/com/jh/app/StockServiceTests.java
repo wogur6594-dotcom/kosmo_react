@@ -79,4 +79,41 @@ public class StockServiceTests {
         // Then
         System.out.println("Price Before: " + priceBefore + ", Price After: " + priceAfter);
     }
+
+    @Test
+    public void testStockSearch() {
+        // Given
+        // 테스트 격리를 위해 기존 DB 데이터 청소 후 재시딩 유도
+        stockHistoryRepository.deleteAll();
+        stockRepository.deleteAll();
+        stockService.getStockList(); // clean seeding trigger
+
+        // When & Then
+        // 1. 테마 검색 ("반도체") -> 삼성전자, SK하이닉스 매칭 확인
+        List<StockDTO> semiconductorStocks = stockService.searchStocks("반도체");
+        assertThat(semiconductorStocks).isNotEmpty();
+        assertThat(semiconductorStocks.stream().anyMatch(s -> s.getSymbol().equals("005930"))).isTrue();
+        assertThat(semiconductorStocks.stream().anyMatch(s -> s.getSymbol().equals("000660"))).isTrue();
+
+        // 2. 섹터 검색 ("빅테크") -> 애플, 엔비디아, 마이크로소프트 매칭 확인
+        List<StockDTO> bigtechStocks = stockService.searchStocks("빅테크");
+        assertThat(bigtechStocks).isNotEmpty();
+        assertThat(bigtechStocks.stream().anyMatch(s -> s.getSymbol().equals("AAPL"))).isTrue();
+        assertThat(bigtechStocks.stream().anyMatch(s -> s.getSymbol().equals("NVDA"))).isTrue();
+        assertThat(bigtechStocks.stream().anyMatch(s -> s.getSymbol().equals("MSFT"))).isTrue();
+
+        // 3. 대소문자 무시 종목코드 검색 ("aapl") -> 애플 매칭 확인
+        List<StockDTO> aaplResult = stockService.searchStocks("aapl");
+        assertThat(aaplResult).isNotEmpty();
+        assertThat(aaplResult.get(0).getSymbol()).isEqualTo("AAPL");
+
+        // 4. 종목명 검색 ("삼성") -> 삼성전자 매칭 확인
+        List<StockDTO> samsungResult = stockService.searchStocks("삼성");
+        assertThat(samsungResult).isNotEmpty();
+        assertThat(samsungResult.get(0).getSymbol()).isEqualTo("005930");
+
+        // 5. 빈 검색어 또는 null 검색어 -> 빈 리스트 반환 확인
+        List<StockDTO> emptyResult = stockService.searchStocks("");
+        assertThat(emptyResult).isEmpty();
+    }
 }

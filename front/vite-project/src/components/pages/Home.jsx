@@ -1,25 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Search } from 'lucide-react';
+import { api } from '../../utils/api';
 
 function Home() {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   // High fidelity fallback stock data in case backend server is starting/reconnecting
   const defaultStocks = [
-    { symbol: '005930', name: '삼성전자', currentPrice: 72800, changePrice: 1200, changeRate: 1.68, category: 'KOSPI' },
-    { symbol: 'AAPL', name: '애플', currentPrice: 182.5, changePrice: -2.3, changeRate: -1.24, category: 'NASDAQ' },
-    { symbol: 'TSLA', name: '테슬라', currentPrice: 179.8, changePrice: 5.4, changeRate: 3.10, category: 'NASDAQ' },
-    { symbol: '000660', name: 'SK하이닉스', currentPrice: 185400, changePrice: 6200, changeRate: 3.46, category: 'KOSPI' },
-    { symbol: 'NVDA', name: '엔비디아', currentPrice: 910.2, changePrice: 18.5, changeRate: 2.07, category: 'NASDAQ' }
+    { symbol: '005930', name: '삼성전자', currentPrice: 72800, changePrice: 1200, changeRate: 1.68, category: 'KOSPI', theme: '반도체', sector: 'IT/기술' },
+    { symbol: 'AAPL', name: '애플', currentPrice: 182.5, changePrice: -2.3, changeRate: -1.24, category: 'NASDAQ', theme: '스마트폰/AI', sector: '빅테크' },
+    { symbol: 'TSLA', name: '테슬라', currentPrice: 179.8, changePrice: 5.4, changeRate: 3.10, category: 'NASDAQ', theme: '전기차/자율주행', sector: '자동차' },
+    { symbol: '000660', name: 'SK하이닉스', currentPrice: 185400, changePrice: 6200, changeRate: 3.46, category: 'KOSPI', theme: '반도체', sector: 'IT/기술' },
+    { symbol: 'NVDA', name: '엔비디아', currentPrice: 910.2, changePrice: 18.5, changeRate: 2.07, category: 'NASDAQ', theme: 'AI반도체', sector: '빅테크' }
   ];
 
+  // 실시간 테마, 섹터, 종목 검색 호출
   useEffect(() => {
-    fetch('http://localhost:8082/api/stock/list')
-      .then(res => {
-        if (!res.ok) throw new Error('API Reconnecting');
-        return res.json();
-      })
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+      try {
+        const res = await api.get(`/api/stock/search?query=${searchQuery}`);
+        setSearchResults(res || []);
+      } catch (err) {
+        console.error('테마 검색 실패:', err);
+        // Fallback filtering in client side just in case
+        const matches = defaultStocks.filter(s => 
+          s.name.includes(searchQuery) || 
+          s.symbol.includes(searchQuery) ||
+          (s.theme && s.theme.includes(searchQuery)) ||
+          (s.sector && s.sector.includes(searchQuery))
+        );
+        setSearchResults(matches);
+      }
+    }, 250); // 250ms 디바운스 적용으로 호출 횟수 최적화
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    api.get('/api/stock/list')
       .then(data => {
         if (data && data.length > 0) {
           setStocks(data);
@@ -37,7 +64,104 @@ function Home() {
 
   return (
     <div className="max-w-4xl mx-auto px-5 py-8 animate-fade-in">
-      
+
+      {/* Search Bar Section */}
+      <section className="relative mb-8">
+        <div className="flex items-center px-4 py-3.5 bg-white dark:bg-toss-dark-card border border-toss-gray-200 dark:border-toss-dark-border rounded-toss shadow-toss focus-within:border-toss-blue focus-within:ring-2 focus-within:ring-toss-blue/20 transition-all">
+          <Search className="w-5 h-5 text-toss-gray-400 mr-3" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="주식, 테마, 섹터를 검색해보세요 (예: 반도체, AI, 빅테크)"
+            className="w-full bg-transparent border-none outline-none text-[15px] font-medium text-toss-gray-900 dark:text-toss-gray-50 placeholder-toss-gray-400"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="text-xs font-bold text-toss-gray-400 hover:text-toss-gray-600 px-2 py-1 rounded transition-colors"
+            >
+              지우기
+            </button>
+          )}
+        </div>
+
+        {/* Dropdown Search Results */}
+        {searchQuery.trim() && (
+          <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-toss-dark-card border border-toss-gray-200 dark:border-toss-dark-border rounded-toss shadow-toss-hover z-50 max-h-80 overflow-y-auto divide-y divide-toss-gray-100 dark:divide-toss-dark-border animate-fade-in">
+            {searchResults.length === 0 ? (
+              <div className="p-6 text-center text-sm font-semibold text-toss-gray-400">
+                검색 결과가 없습니다.
+              </div>
+            ) : (
+              searchResults.map((stock) => {
+                const isUp = stock.changeRate >= 0;
+                const color = isUp ? 'var(--stock-up)' : 'var(--stock-down)';
+                const prefix = isUp ? '+' : '';
+                
+                // Match type check for badge decoration
+                const queryLower = searchQuery.toLowerCase();
+                const isThemeMatch = stock.theme && stock.theme.toLowerCase().includes(queryLower);
+                const isSectorMatch = stock.sector && stock.sector.toLowerCase().includes(queryLower);
+
+                return (
+                  <Link
+                    to={`/stock/${stock.symbol}`}
+                    key={stock.symbol}
+                    onClick={() => setSearchQuery('')}
+                    className="flex items-center justify-between p-4 hover:bg-toss-gray-50 dark:hover:bg-toss-dark-border/40 transition-colors duration-150"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="flex flex-col">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-[15px] font-bold text-toss-gray-900 dark:text-toss-gray-50">
+                            {stock.name}
+                          </span>
+                          <span className="text-[11px] text-toss-gray-400 uppercase font-semibold">
+                            {stock.symbol}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1.5 mt-1">
+                          {isThemeMatch && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+                              테마: {stock.theme}
+                            </span>
+                          )}
+                          {isSectorMatch && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400">
+                              섹터: {stock.sector}
+                            </span>
+                          )}
+                          {!isThemeMatch && !isSectorMatch && stock.theme && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-toss-blue-light text-toss-blue dark:bg-toss-blue-dark/20 dark:text-toss-blue/80">
+                              {stock.theme}
+                            </span>
+                          )}
+                          {!isThemeMatch && !isSectorMatch && stock.sector && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-toss-gray-100 text-toss-gray-500 dark:bg-toss-dark-border dark:text-toss-gray-400">
+                              {stock.sector}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <p className="text-sm font-extrabold text-toss-gray-900 dark:text-toss-gray-50">
+                        {stock.category === 'NASDAQ' ? `$${stock.currentPrice.toLocaleString()}` : `₩${stock.currentPrice.toLocaleString()}`}
+                      </p>
+                      <span className="text-xs font-bold" style={{ color: color }}>
+                        {prefix}{stock.changePrice.toLocaleString()} ({prefix}{stock.changeRate.toFixed(2)}%)
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })
+            )}
+          </div>
+        )}
+      </section>
+
       {/* 1. Market Indices Section (KOSPI & KOSDAQ cards) */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         

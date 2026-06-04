@@ -30,4 +30,9 @@ public class StockController {
         response.put("history", history);
         return response;
     }
+
+    @GetMapping("/search")
+    public List<StockDTO> searchStocks(@RequestParam(value = "query", defaultValue = "") String query) {
+        return stockService.searchStocks(query);
+    }
 }

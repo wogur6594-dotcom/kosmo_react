@@ -34,12 +34,12 @@ public class MockStockServiceImpl implements StockService {
         }
 
         List<StockDTO> defaultStocks = new ArrayList<>();
-        defaultStocks.add(StockDTO.builder().symbol("005930").name("삼성전자").currentPrice(72800.0).changePrice(1200.0).changeRate(1.68).category("KOSPI").build());
-        defaultStocks.add(StockDTO.builder().symbol("000660").name("SK하이닉스").currentPrice(185400.0).changePrice(6200.0).changeRate(3.46).category("KOSPI").build());
-        defaultStocks.add(StockDTO.builder().symbol("AAPL").name("애플").currentPrice(182.5).changePrice(-2.3).changeRate(-1.24).category("NASDAQ").build());
-        defaultStocks.add(StockDTO.builder().symbol("TSLA").name("테슬라").currentPrice(179.8).changePrice(5.4).changeRate(3.10).category("NASDAQ").build());
-        defaultStocks.add(StockDTO.builder().symbol("NVDA").name("엔비디아").currentPrice(910.2).changePrice(18.5).changeRate(2.07).category("NASDAQ").build());
-        defaultStocks.add(StockDTO.builder().symbol("MSFT").name("마이크로소프트").currentPrice(420.5).changePrice(2.1).changeRate(0.50).category("NASDAQ").build());
+        defaultStocks.add(StockDTO.builder().symbol("005930").name("삼성전자").currentPrice(72800.0).changePrice(1200.0).changeRate(1.68).category("KOSPI").theme("반도체").sector("IT/기술").build());
+        defaultStocks.add(StockDTO.builder().symbol("000660").name("SK하이닉스").currentPrice(185400.0).changePrice(6200.0).changeRate(3.46).category("KOSPI").theme("반도체").sector("IT/기술").build());
+        defaultStocks.add(StockDTO.builder().symbol("AAPL").name("애플").currentPrice(182.5).changePrice(-2.3).changeRate(-1.24).category("NASDAQ").theme("스마트폰/AI").sector("빅테크").build());
+        defaultStocks.add(StockDTO.builder().symbol("TSLA").name("테슬라").currentPrice(179.8).changePrice(5.4).changeRate(3.10).category("NASDAQ").theme("전기차/자율주행").sector("자동차").build());
+        defaultStocks.add(StockDTO.builder().symbol("NVDA").name("엔비디아").currentPrice(910.2).changePrice(18.5).changeRate(2.07).category("NASDAQ").theme("AI반도체").sector("빅테크").build());
+        defaultStocks.add(StockDTO.builder().symbol("MSFT").name("마이크로소프트").currentPrice(420.5).changePrice(2.1).changeRate(0.50).category("NASDAQ").theme("클라우드/AI").sector("빅테크").build());
 
         stockRepository.saveAll(defaultStocks);
 
@@ -130,5 +130,13 @@ public class MockStockServiceImpl implements StockService {
             return histories.subList(histories.size() - 50, histories.size());
         }
         return histories;
+    }
+
+    @Override
+    public List<StockDTO> searchStocks(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return new java.util.ArrayList<>();
+        }
+        return stockRepository.searchStocks(query.trim());
     }
 }

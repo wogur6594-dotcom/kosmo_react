@@ -33,4 +33,10 @@ public class StockDTO {
 
     @Column(nullable = false)
     private String category; // 분류 (KOSPI, NASDAQ 등)
+
+    @Column(nullable = true)
+    private String theme; // 투자 테마 (반도체, AI 등)
+
+    @Column(nullable = true)
+    private String sector; // 산업 섹터 (IT/기술, 자동차 등)
 }
