@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-@Service
+@Service("mockStockService")
 @Transactional
 public class MockStockServiceImpl implements StockService {
 
